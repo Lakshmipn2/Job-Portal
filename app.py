@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
 
@@ -34,6 +36,7 @@ class Job(db.Model):
     salary = db.Column(db.String(30), nullable = False)
     contact_info = db.Column(db.String(30), nullable = False)
     employer_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    applications = db.relationship("Application")
 
 class Application(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -41,6 +44,8 @@ class Application(db.Model):
     job_id = db.Column(db.Integer, db.ForeignKey("job.id"))
     applied_on = db.Column(db.DateTime)
     job = db.relationship("Job")
+    user = db.relationship("User", foreign_keys=[user_id])
+    status = db.Column(db.String(20), default="Pending")
 
 with app.app_context():
     db.create_all()
@@ -65,7 +70,14 @@ def register():
 
         hashed_password = generate_password_hash(password)
 
-        new_user = User(name=name, email=email, password=hashed_password, phone_number=phone_number, role=role)
+        resume_filename = None
+        resume = request.files.get("resume")
+        if resume and resume.filename != "":
+            filename = secure_filename(resume.filename)
+            resume.save(os.path.join(app.root_path, "static/resumes", filename))
+            resume_filename = filename
+
+        new_user = User(name=name, email=email, password=hashed_password, phone_number=phone_number, role=role, resume=resume_filename)
         db.session.add(new_user)
         db.session.commit()
     else:
@@ -102,7 +114,14 @@ def employer_dashboard():
 @app.route("/jobseeker/dashboard")
 @login_required
 def jobseeker_dashboard():
-    return render_template("job_seeker_dashboard.html")
+    pending = Application.query.filter_by(
+        user_id=current_user.id, status="Pending").count()
+    accepted = Application.query.filter_by(
+        user_id=current_user.id, status="Accepted").count()
+    rejected = Application.query.filter_by(
+        user_id=current_user.id, status="Rejected").count()
+    return render_template("job_seeker_dashboard.html", 
+        pending=pending, accepted=accepted, rejected=rejected)
 
 @app.route("/post-job", methods=["GET", "POST"])
 @login_required
@@ -134,11 +153,7 @@ def browse_job():
 @app.route("/apply/<int:job_id>")
 @login_required
 def apply(job_id):
-    new_application = Application(
-        user_id = current_user.id,
-        job_id = job_id,
-        applied_on = datetime.now()
-    )
+    new_application = Application(user_id = current_user.id, job_id = job_id, applied_on = datetime.now())
     db.session.add(new_application)
     db.session.commit()
     return redirect("/browse-job")
@@ -149,11 +164,33 @@ def my_applications():
     applications = Application.query.filter_by(user_id=current_user.id).all()
     return render_template("my_applications.html", applications=applications)
 
+@app.route("/employer/applications")
+@login_required
+def employer_applications():
+    jobs = Job.query.filter_by(employer_id=current_user.id).all()
+    return render_template("employer_applications.html", jobs=jobs)
+
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect("/")
+
+@app.route("/application/accept/<int:application_id>")
+@login_required
+def accept_application(application_id):
+    application = Application.query.get(application_id)
+    application.status = "Accepted"
+    db.session.commit()
+    return redirect("/employer/applications")
+
+@app.route("/application/reject/<int:application_id>")
+@login_required
+def reject_application(application_id):
+    application = Application.query.get(application_id)
+    application.status = "Rejected"
+    db.session.commit()
+    return redirect("/employer/applications")
 
 if __name__ == "__main__":
     app.run(debug=True)

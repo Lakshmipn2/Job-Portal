@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <title>Apply</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/">Job Portal</a>
+                <div>
+                    <a href="javascript:history.back()" class="btn btn-secondary">← Back</a>
+                    <a href="/logout" class="btn btn-danger">Logout</a>
+                </div>
+            </div>
+        </nav>
+        <div class="container mt-5 text-center">
+            <h1 class="mb-4">Job Applied</h1>
+            {% for job in jobs %}
+                <div class="card p-3 shadow mb-3">
+                    <h3>{{ job.title }}</h3>
+                    <p>Total Applications: {{ job.applications|length }}</p>
+                    {% for application in job.applications %}
+                        <p>Name: {{ application.user.name }}</p>
+                        <p>Email: {{ application.user.email }}</p>
+                        <p>Phone: {{ application.user.phone_number }}</p>
+                        <p>Status: {{ application.status }}</p>
+                        {% if application.user.resume %}
+                            <a href="/static/resumes/{{ application.user.resume }}" 
+                                class="btn btn-sm btn-info" target="_blank">View Resume</a>
+                        {% else %}
+                            <p>No resume uploaded</p>
+                        {% endif %}
+                        <a href="/application/accept/{{ application.id }}" 
+                            class="btn btn-success btn-sm">Accept</a>
+                        <a href="/application/reject/{{ application.id }}" 
+                            class="btn btn-danger btn-sm">Reject</a>
+                        <hr>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>        
+    </body>
+</html>

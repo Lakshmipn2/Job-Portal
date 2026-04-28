@@ -9,6 +9,7 @@
             <div class="container">
                 <a class="navbar-brand" href="/">Job Portal</a>
                 <div>
+                    <a href="javascript:history.back()" class="btn btn-secondary">← Back</a>
                     <a href="/logout" class="btn btn-danger">Logout</a>
                 </div>
             </div>
@@ -22,6 +23,13 @@
                     <p>Location: {{application.job.location}}</p>
                     <p>Salary: {{application.job.salary}}</p>
                     <p>Applied On: {{application.applied_on}}</p>
+                    {% if application.status == "Accepted" %}
+                    <p class="text-success">Status: ✅ Accepted</p>
+                    {% elif application.status == "Rejected" %}
+                        <p class="text-danger">Status: ❌ Rejected</p>
+                    {% else %}
+                        <p class="text-warning">Status: ⏳ Pending</p>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>        

@@ -26,8 +26,8 @@ A web application where job seekers can find and apply for jobs and employers ca
 ## How to Run
 1. Clone the repository
 2. Install dependencies: pip install -r requirements.txt
-2. Run the app: python app.py
-3. Open browser: http://127.0.0.1:5000
+3. Run the app: python app.py
+4. Open browser: http://127.0.0.1:5000
 ## Project Structure
 - job_portal/
 - ├── app.py

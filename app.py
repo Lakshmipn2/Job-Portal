@@ -8,7 +8,10 @@ import os
 
 app = Flask(__name__)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+database_url = os.environ.get("DATABASE_URL", "sqlite:///database.db")
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "1896436d2a6a6e30a2373b99679d1418"
 
@@ -73,9 +76,12 @@ def register():
         resume_filename = None
         resume = request.files.get("resume")
         if resume and resume.filename != "":
-            filename = secure_filename(resume.filename)
-            resume.save(os.path.join(app.root_path, "static/resumes", filename))
-            resume_filename = filename
+            try:
+                filename = secure_filename(resume.filename)
+                resume.save(os.path.join(app.root_path, "static", "resumes", filename))
+                resume_filename = filename
+            except Exception as e:
+                flash("Resume upload failed — please upload later!", "warning")
 
         new_user = User(name=name, email=email, password=hashed_password, phone_number=phone_number, role=role, resume=resume_filename)
         db.session.add(new_user)

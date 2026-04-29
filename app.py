@@ -156,7 +156,7 @@ def apply(job_id):
     new_application = Application(user_id = current_user.id, job_id = job_id, applied_on = datetime.now())
     db.session.add(new_application)
     db.session.commit()
-    return redirect("/browse-job")
+    return redirect("/jobseeker/dashboard")
 
 @app.route("/my-applications")
 @login_required

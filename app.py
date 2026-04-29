@@ -34,7 +34,7 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(30), nullable = False)
     email = db.Column(db.String(30), nullable = False, unique = True)
     phone_number = db.Column(db.String(30), nullable = False)
-    password = db.Column(db.String(30), nullable = False)
+    password = db.Column(db.String(300), nullable = False)
     role = db.Column(db.String(30), nullable = False) # Job-Seeker or Employer
 
 # Job Model - stores all users (Job seekers, Employers)

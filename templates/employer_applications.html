@@ -1,3 +1,4 @@
+<!-- Employer Applications Page - Shows all applications received by employer -->
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -25,12 +26,6 @@
                         <p>Email: {{ application.user.email }}</p>
                         <p>Phone: {{ application.user.phone_number }}</p>
                         <p>Status: {{ application.status }}</p>
-                        {% if application.user.resume %}
-                            <a href="/static/resumes/{{ application.user.resume }}" 
-                                class="btn btn-sm btn-info" target="_blank">View Resume</a>
-                        {% else %}
-                            <p>No resume uploaded</p>
-                        {% endif %}
                         {% if application.status == "Pending" %}
                             <a href="/application/accept/{{ application.id }}" 
                                 class="btn btn-success btn-sm">Accept</a>

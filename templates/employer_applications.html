@@ -31,10 +31,16 @@
                         {% else %}
                             <p>No resume uploaded</p>
                         {% endif %}
-                        <a href="/application/accept/{{ application.id }}" 
-                            class="btn btn-success btn-sm">Accept</a>
-                        <a href="/application/reject/{{ application.id }}" 
-                            class="btn btn-danger btn-sm">Reject</a>
+                        {% if application.status == "Pending" %}
+                            <a href="/application/accept/{{ application.id }}" 
+                                class="btn btn-success btn-sm">Accept</a>
+                            <a href="/application/reject/{{ application.id }}" 
+                                class="btn btn-danger btn-sm">Reject</a>
+                        {% elif application.status == "Accepted" %}
+                            <span class="badge bg-success">✅ Accepted</span>
+                        {% elif application.status == "Rejected" %}
+                            <span class="badge bg-danger">❌ Rejected</span>
+                        {% endif %}
                         <hr>
                     {% endfor %}
                 </div>

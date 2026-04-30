@@ -35,6 +35,7 @@ A full stack web application where job seekers can find and apply for jobs and e
 - ├── README.md
 - ├── static/
 - │   ├── css/
-- └── templates/
+- ├── templates/
+- └── gitignore
 ## Deployment
 Live at: https://job-portal-yh45.onrender.com

@@ -1,9 +1,9 @@
 # Job Portal Web Application
 ## Description
-A web application where job seekers can find and apply for jobs and employers can post jobs and manage applications.
+A full stack web application where job seekers can find and apply for jobs and employers can post jobs and manage applications.
 ## Features
 ### Job Seeker
-- User registration with resume upload
+- User registration and login
 - Role based login and dashboard
 - Browse and search job listings
 - Apply for jobs
@@ -13,14 +13,13 @@ A web application where job seekers can find and apply for jobs and employers ca
 - Post job listings
 - View all applications received
 - Accept or reject applications
-- View applicant resumes
 ### General
 - User authentication with password hashing
 - Flash messages for feedback
 - Responsive UI with Bootstrap
 ## Tech Stack
 - Backend: Python Flask
-- Database: SQLite + SQLAlchemy
+- Database: PostgreSQL (Render) / SQLite (Local)
 - Frontend: HTML, CSS, Bootstrap
 - Authentication: Flask-login
 ## How to Run
@@ -36,7 +35,6 @@ A web application where job seekers can find and apply for jobs and employers ca
 - ├── README.md
 - ├── static/
 - │   ├── css/
-- │   └── resumes/
 - └── templates/
 ## Deployment
 Live at: https://job-portal-yh45.onrender.com
